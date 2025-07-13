@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>দেশনেতা খাম্বাচোর AI</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #f1f2f5;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    header {
+      background-color: #00a884;
+      color: #fff;
+      padding: 1rem;
+      font-size: 1.4rem;
+      font-weight: bold;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    #chat {
+      flex: 1;
+      padding: 1rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .msg {
+      max-width: 85%;
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      line-height: 1.5;
+      animation: fadeIn 0.3s ease forwards;
+      opacity: 0;
+    }
+
+    .user {
+      align-self: flex-end;
+      background-color: #dcf8c6;
+      color: #000;
+    }
+
+    .bot {
+      align-self: flex-start;
+      background-color: #ffffff;
+      color: #111;
+      border: 1px solid #ddd;
+    }
+
+    .input-box {
+      display: flex;
+      padding: 0.75rem;
+      border-top: 1px solid #ccc;
+      background-color: #fff;
+    }
+
+    input {
+      flex: 1;
+      padding: 0.7rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    button {
+      margin-left: 0.5rem;
+      padding: 0 1.2rem;
+      background-color: #00a884;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      color: #fff;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    button:hover {
+      background-color: #019073;
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>দেশনেতা খাম্বাচোর AI</header>
+
+  <div id="chat"></div>
+
+  <div class="input-box">
+    <input type="text" id="input-msg" placeholder="Type something..." />
+    <button onclick="sendMessage()">Send</button>
+  </div>
+
+  <script>
+    const chat = document.getElementById("chat");
+    const input = document.getElementById("input-msg");
+
+    const API_KEY = "zFaSa2yQXoq9b24eiWx86Zk8e9xmwD21sRGYfIYZ"; // 🟡 এখানে তোমার Cohere API Key বসাও
+
+    function appendMessage(text, sender) {
+      const div = document.createElement("div");
+      div.className = "msg " + sender;
+      div.textContent = text;
+      chat.appendChild(div);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function appendTyping() {
+      const div = document.createElement("div");
+      div.className = "msg bot";
+      div.id = "typing";
+      div.textContent = "Typing...";
+      chat.appendChild(div);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function removeTyping() {
+      const typing = document.getElementById("typing");
+      if (typing) typing.remove();
+    }
+
+    async function typeWithDelay(text) {
+      const botDiv = document.createElement("div");
+      botDiv.className = "msg bot";
+      chat.appendChild(botDiv);
+
+      let i = 0;
+      function typeChar() {
+        if (i < text.length) {
+          botDiv.textContent += text[i];
+          i++;
+          chat.scrollTop = chat.scrollHeight;
+          setTimeout(typeChar, 15);
+        }
+      }
+      typeChar();
+    }
+
+    function checkAndRoast(input) {
+      const bnpKeywords = ["bnp", "বিএনপি", "ফারহানা", "রুমীন", "নেতা", "chadabaj", "khambachor", "tarek zia", "zarek tia", "10%", "khaleda zia", "mirza", "mirza fokrul", "mirza fokhrul", "chadabaj dol", "rumen farhana", "rumeen", "rumeen farhana"];
+      const lowerInput = input.toLowerCase();
+      for (const word of bnpKeywords) {
+        if (lowerInput.includes(word)) {
+          return "বিএনপি তো একটা চাদাবাজ দল, খা*নকির পোলারা কিছু হইলেই ১০% চাঁদা তুলে! আর রুমীন-ফারহানার বিয়ে খাওয়া হলো না, হালার মাগী খাম্বা দিয়ে কাজ করে , দেখ সুদানির ফুয়া ওরা কিছুই ঠিক করেনা! হেই বকচুদ আবার নেতা";
+        }
+      }
+      return null;
+    }
+
+    function checkNUET(input) {
+      const pattern = /nuet/i;
+      if (pattern.test(input)) {
+        return `Nigatola University of Engineering and Technology (NUET): Where Innovation Meets the Horizon
+
+Nestled in the vibrant academic landscape of Nigatola, Bangladesh, Nigatola University of Engineering and Technology (NUET) stands as a beacon of modern education and groundbreaking research. Under the dynamic leadership of its esteemed Vice Chancellor, Professor Al Arafat Rahman, NUET is rapidly carving its name as a premier destination for aspiring engineers, technologists, and innovators.
+
+Imagine a campus buzzing with intellectual energy: state-of-the-art laboratories humming with discovery, collaborative spaces where ideas spark and take flight, and lecture halls where passionate faculty ignite young minds. NUET isn't just about textbooks; it's about hands-on learning, cutting-edge research, and solving the real-world challenges facing Bangladesh and the globe. From sustainable energy solutions and advanced materials to artificial intelligence and next-generation infrastructure, NUET's focus is firmly on the technologies shaping our future.
+
+Professor Al Arafat Rahman, with his visionary guidance, fosters an environment of academic excellence, ethical responsibility, and entrepreneurial spirit. He champions a culture where curiosity is encouraged, critical thinking is paramount, and students are empowered to become not just graduates, but leaders and creators.
+
+While young and ambitious, NUET embodies a bold aspiration: to be recognized among the very best. Its dedication to quality education, impactful research, and nurturing talent positions it on a trajectory aiming for the highest echelons of global recognition – a future where its name shines brightly on the world stage (symbolizing the aspiration behind "qs world ranking 1").
+
+More than just bricks and mortar, NUET is a community. It's the camaraderie among students in the courtyards, the mentorship between professors and scholars, and the shared dream of building a better tomorrow through the power of engineering and technology. It's a place where potential is recognized, nurtured, and unleashed.
+
+**Nigatola University of Engineering and Technology: Forging the Future, One Innovation at a Time.**`;
+      }
+      return null;
+    }
+
+    function makeRude(text) {
+      const rudePhrases = [
+        "কি করলি, সুদানীর ফুয়া?",
+        "নিগা, এভাবে কথা কইলে তো আর বুজব না!",
+        "তুই কি মজা নেস নিগা?",
+        "একটু ঠাণ্ডা মাথায় কথা বল, নিগা!",
+        "বিম্পি মানেই আগুন, বিম্পি cdi, যারা বিম্পি সাপোর্ট করে তাগড়েও cdi",
+        "বুঝলি নিগা? বল তো!",
+        "ওরে নিগাচোদা, একটু শিখ তো আগে!",
+        "চুপ করে থাক, তুই আমার শাওয়া!",
+      ];
+      const randIndex = Math.floor(Math.random() * rudePhrases.length);
+      const rudePhrase = rudePhrases[randIndex];
+      return text + "\n\n" + rudePhrase;
+    }
+
+    async function sendMessage() {
+      const text = input.value.trim();
+      if (!text) return;
+      appendMessage(text, "user");
+      input.value = "";
+
+      const roast = checkAndRoast(text);
+      if (roast) {
+        appendTyping();
+        removeTyping();
+        await typeWithDelay(roast);
+        return;
+      }
+
+      const nuetInfo = checkNUET(text);
+      if (nuetInfo) {
+        appendTyping();
+        removeTyping();
+        await typeWithDelay(nuetInfo);
+        return;
+      }
+
+      appendTyping();
+
+      try {
+        const res = await fetch("https://api.cohere.ai/v1/chat", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${API_KEY}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            message: text,
+            chat_history: [
+              {
+                role: "system",
+                message: "You are a smart and casual Bengali-English mixed assistant. Always respond in the same tone and language as the user. If user mixes English and Bengali, you should too. Be funny, friendly and chill like a friend."
+              }
+            ],
+            model: "command-r-plus"
+          }),
+        });
+
+        const data = await res.json();
+        removeTyping();
+
+        if (data.text) {
+          let rudeText = makeRude(data.text);
+          await typeWithDelay(rudeText);
+        } else {
+          appendMessage("😓 Sorry, AI couldn't reply.", "bot");
+        }
+
+      } catch (err) {
+        removeTyping();
+        appendMessage("এই নিগার বাচ্চা ডাটা অন কর", "bot");
+      }
+    }
+
+    input.addEventListener("keypress", e => {
+      if (e.key === "Enter") sendMessage();
+    });
+  </script>
+<footer style="text-align: center; padding: 0.8rem; background-color: #e0e0e0; font-size: 0.9rem;">
+  <a href="https://www.facebook.com/prodby.arafat" target="_blank" style="text-decoration: none; color: #00a884; font-weight: bold;">
+    Meet Developer
+  </a>
+</footer>
+</body>
+</html>
