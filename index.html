@@ -1,268 +1,150 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>দেশনেতা খাম্বাচোর AI</title>
+  <title>Rude Banglish AI Chatbot</title>
   <style>
     body {
       margin: 0;
-      background-color: #f1f2f5;
+      background-color: #0d1117;
+      color: #fff;
       font-family: 'Segoe UI', sans-serif;
       display: flex;
       flex-direction: column;
       height: 100vh;
     }
-
-    header {
-      background-color: #00a884;
-      color: #fff;
-      padding: 1rem;
-      font-size: 1.4rem;
-      font-weight: bold;
-      text-align: center;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-
-    #chat {
+    .chat-container {
       flex: 1;
-      padding: 1rem;
       overflow-y: auto;
+      padding: 1rem;
       display: flex;
       flex-direction: column;
-      gap: 12px;
     }
-
-    .msg {
-      max-width: 85%;
-      padding: 0.75rem 1rem;
-      border-radius: 12px;
-      white-space: pre-wrap;
-      word-wrap: break-word;
-      line-height: 1.5;
-      animation: fadeIn 0.3s ease forwards;
-      opacity: 0;
+    .message {
+      max-width: 75%;
+      padding: 0.8rem 1rem;
+      margin: 0.4rem 0;
+      border-radius: 20px;
+      animation: fadeIn 0.3s ease-in-out;
     }
-
     .user {
       align-self: flex-end;
-      background-color: #dcf8c6;
-      color: #000;
+      background-color: #238636;
     }
-
     .bot {
       align-self: flex-start;
-      background-color: #ffffff;
-      color: #111;
-      border: 1px solid #ddd;
+      background-color: #30363d;
     }
-
-    .input-box {
+    .input-area {
       display: flex;
-      padding: 0.75rem;
-      border-top: 1px solid #ccc;
-      background-color: #fff;
+      padding: 0.5rem;
+      background-color: #161b22;
+      border-top: 1px solid #333;
     }
-
     input {
       flex: 1;
       padding: 0.7rem;
-      border: 1px solid #ccc;
-      border-radius: 8px;
+      border-radius: 10px;
+      border: none;
       font-size: 1rem;
+      background-color: #0d1117;
+      color: white;
     }
-
     button {
       margin-left: 0.5rem;
-      padding: 0 1.2rem;
-      background-color: #00a884;
+      padding: 0 1rem;
       border: none;
-      border-radius: 8px;
-      font-weight: bold;
-      color: #fff;
+      background-color: #f85149;
+      color: white;
+      border-radius: 10px;
+      font-size: 1rem;
       cursor: pointer;
-      transition: 0.2s ease;
     }
-
     button:hover {
-      background-color: #019073;
+      background-color: #da3633;
     }
-
     @keyframes fadeIn {
-      to { opacity: 1; }
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
     }
   </style>
 </head>
 <body>
-
-  <header>দেশনেতা খাম্বাচোর AI</header>
-
-  <div id="chat"></div>
-
-  <div class="input-box">
-    <input type="text" id="input-msg" placeholder="Type something..." />
-    <button onclick="sendMessage()">Send</button>
-  </div>
+  <div class="chat-container" id="chat"></div>
+  <form class="input-area" id="chat-form">
+    <input type="text" id="user-input" placeholder="Tui kichu bol..." autocomplete="off" required />
+    <button type="submit">Send</button>
+  </form>
 
   <script>
-    const chat = document.getElementById("chat");
-    const input = document.getElementById("input-msg");
+    const API_KEY = "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"; // 🔑 Replace with your OpenRouter API Key
+    const MODEL = "mistral/mistral-7b-instruct"; // or try "openchat/openchat-7b" or others
 
-    const API_KEY = "H8iYKSWER7L53QD91fS0lo4rZvRP4wqXF8mHbSYL"; // 🟡 এখানে তোমার Cohere API Key বসাও
+    const chatContainer = document.getElementById("chat");
+    const form = document.getElementById("chat-form");
+    const input = document.getElementById("user-input");
 
-    function appendMessage(text, sender) {
-      const div = document.createElement("div");
-      div.className = "msg " + sender;
-      div.textContent = text;
-      chat.appendChild(div);
-      chat.scrollTop = chat.scrollHeight;
-    }
-
-    function appendTyping() {
-      const div = document.createElement("div");
-      div.className = "msg bot";
-      div.id = "typing";
-      div.textContent = "Typing...";
-      chat.appendChild(div);
-      chat.scrollTop = chat.scrollHeight;
-    }
-
-    function removeTyping() {
-      const typing = document.getElementById("typing");
-      if (typing) typing.remove();
-    }
-
-    async function typeWithDelay(text) {
-      const botDiv = document.createElement("div");
-      botDiv.className = "msg bot";
-      chat.appendChild(botDiv);
-
-      let i = 0;
-      function typeChar() {
-        if (i < text.length) {
-          botDiv.textContent += text[i];
-          i++;
-          chat.scrollTop = chat.scrollHeight;
-          setTimeout(typeChar, 15);
-        }
+    let messages = [
+      {
+        role: "system",
+        content: "Tui ekta Banglish AI. Tui onek rude, sarcastic, ar roast koros. Bhul kichu holeo bolbi, boro bhai style e gham de na."
       }
-      typeChar();
+    ];
+
+    function addMessage(text, className) {
+      const msg = document.createElement("div");
+      msg.className = `message ${className}`;
+      msg.textContent = text;
+      chatContainer.appendChild(msg);
+      chatContainer.scrollTop = chatContainer.scrollHeight;
     }
 
-    function checkAndRoast(input) {
-      const bnpKeywords = ["bnp", "বিএনপি", "ফারহানা", "রুমীন", "নেতা", "chadabaj", "khambachor", "tarek zia", "zarek tia", "10%", "khaleda zia", "mirza", "mirza fokrul", "mirza fokhrul", "chadabaj dol", "rumen farhana", "rumeen", "rumeen farhana"];
-      const lowerInput = input.toLowerCase();
-      for (const word of bnpKeywords) {
-        if (lowerInput.includes(word)) {
-          return "বিএনপি তো একটা চাদাবাজ দল, খা*নকির পোলারা কিছু হইলেই ১০% চাঁদা তুলে! আর রুমীন-ফারহানার বিয়ে খাওয়া হলো না, হালার মাগী খাম্বা দিয়ে কাজ করে , দেখ সুদানির ফুয়া ওরা কিছুই ঠিক করেনা! হেই বকচুদ আবার নেতা";
-        }
-      }
-      return null;
+    async function sendToOpenRouter(userInput) {
+      messages.push({ role: "user", content: userInput });
+
+      const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${API_KEY}`,
+          "HTTP-Referer": "https://yourdomain.com", // required
+          "X-Title": "RudeBanglishBot" // optional
+        },
+        body: JSON.stringify({
+          model: MODEL,
+          messages: messages,
+          temperature: 1
+        })
+      });
+
+      const data = await response.json();
+      const reply = data.choices?.[0]?.message?.content?.trim() || "Bujhlam na tui ki boltesos pagla!";
+      messages.push({ role: "assistant", content: reply });
+      return reply;
     }
 
-    function checkNUET(input) {
-      const pattern = /nuet/i;
-      if (pattern.test(input)) {
-        return `Nigatola University of Engineering and Technology (NUET): Where Innovation Meets the Horizon
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const userText = input.value.trim();
+      if (!userText) return;
 
-Nestled in the vibrant academic landscape of Nigatola, Bangladesh, Nigatola University of Engineering and Technology (NUET) stands as a beacon of modern education and groundbreaking research. Under the dynamic leadership of its esteemed Vice Chancellor, Professor Al Arafat Rahman, NUET is rapidly carving its name as a premier destination for aspiring engineers, technologists, and innovators.
-
-Imagine a campus buzzing with intellectual energy: state-of-the-art laboratories humming with discovery, collaborative spaces where ideas spark and take flight, and lecture halls where passionate faculty ignite young minds. NUET isn't just about textbooks; it's about hands-on learning, cutting-edge research, and solving the real-world challenges facing Bangladesh and the globe. From sustainable energy solutions and advanced materials to artificial intelligence and next-generation infrastructure, NUET's focus is firmly on the technologies shaping our future.
-
-Professor Al Arafat Rahman, with his visionary guidance, fosters an environment of academic excellence, ethical responsibility, and entrepreneurial spirit. He champions a culture where curiosity is encouraged, critical thinking is paramount, and students are empowered to become not just graduates, but leaders and creators.
-
-While young and ambitious, NUET embodies a bold aspiration: to be recognized among the very best. Its dedication to quality education, impactful research, and nurturing talent positions it on a trajectory aiming for the highest echelons of global recognition – a future where its name shines brightly on the world stage (symbolizing the aspiration behind "qs world ranking 1").
-
-More than just bricks and mortar, NUET is a community. It's the camaraderie among students in the courtyards, the mentorship between professors and scholars, and the shared dream of building a better tomorrow through the power of engineering and technology. It's a place where potential is recognized, nurtured, and unleashed.
-
-**Nigatola University of Engineering and Technology: Forging the Future, One Innovation at a Time.**`;
-      }
-      return null;
-    }
-
-    function makeRude(text) {
-      const rudePhrases = [
-        "কি করলি, সুদানীর ফুয়া?",
-        "নিগা, এভাবে কথা কইলে তো আর বুজব না!",
-        "তুই কি মজা নেস নিগা?",
-        "একটু ঠাণ্ডা মাথায় কথা বল, নিগা!",
-        "বিম্পি মানেই আগুন, বিম্পি cdi, যারা বিম্পি সাপোর্ট করে তাগড়েও cdi",
-        "বুঝলি নিগা? বল তো!",
-        "ওরে নিগাচোদা, একটু শিখ তো আগে!",
-        "চুপ করে থাক, তুই আমার শাওয়া!",
-      ];
-      const randIndex = Math.floor(Math.random() * rudePhrases.length);
-      const rudePhrase = rudePhrases[randIndex];
-      return text + "\n\n" + rudePhrase;
-    }
-
-    async function sendMessage() {
-      const text = input.value.trim();
-      if (!text) return;
-      appendMessage(text, "user");
+      addMessage(userText, "user");
       input.value = "";
-
-      const roast = checkAndRoast(text);
-      if (roast) {
-        appendTyping();
-        removeTyping();
-        await typeWithDelay(roast);
-        return;
-      }
-
-      const nuetInfo = checkNUET(text);
-      if (nuetInfo) {
-        appendTyping();
-        removeTyping();
-        await typeWithDelay(nuetInfo);
-        return;
-      }
-
-      appendTyping();
+      const typing = document.createElement("div");
+      typing.className = "message bot";
+      typing.textContent = "Typing...";
+      chatContainer.appendChild(typing);
+      chatContainer.scrollTop = chatContainer.scrollHeight;
 
       try {
-        const res = await fetch("https://api.cohere.ai/v1/chat", {
-          method: "POST",
-          headers: {
-            "Authorization": `Bearer ${API_KEY}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            message: text,
-            chat_history: [
-              {
-                role: "system",
-                message: "You are a smart and casual Bengali-English mixed assistant. Always respond in the same tone and language as the user. If user mixes English and Bengali, you should too. Be funny, friendly and chill like a friend."
-              }
-            ],
-            model: "command-r-plus"
-          }),
-        });
-
-        const data = await res.json();
-        removeTyping();
-
-        if (data.text) {
-          let rudeText = makeRude(data.text);
-          await typeWithDelay(rudeText);
-        } else {
-          appendMessage("😓 Sorry, AI couldn't reply.", "bot");
-        }
-
+        const reply = await sendToOpenRouter(userText);
+        typing.textContent = reply;
       } catch (err) {
-        removeTyping();
-        appendMessage("এই নিগার বাচ্চা ডাটা অন কর", "bot");
+        typing.textContent = "Pagla server error diche. API key dekh na vai.";
+        console.error(err);
       }
-    }
-
-    input.addEventListener("keypress", e => {
-      if (e.key === "Enter") sendMessage();
     });
   </script>
-<footer style="text-align: center; padding: 0.8rem; background-color: #e0e0e0; font-size: 0.9rem;">
-  <a href="https://www.facebook.com/prodby.arafat" target="_blank" style="text-decoration: none; color: #00a884; font-weight: bold;">
-    Meet Developer
-  </a>
-</footer>
 </body>
 </html>
